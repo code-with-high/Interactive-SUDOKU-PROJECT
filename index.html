@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google:Search Engine</title>
+</head>
+<style>
+    h1 {
+        text-align: center;
+        font-size: 5em;
+        font-family: 'Courier New', Courier, monospace;
+        color: rgb(125, 13, 218);
+        margin-top: 1%;
+
+
+    }
+
+    body {
+        background-color: black;
+    }
+
+    #container {
+
+        display: grid;
+        grid-template-columns: repeat(9, 11%);
+        margin-left: 20%;
+        margin-right: 20%;
+        margin-top: 2%;
+        margin-bottom: 1%;
+        /* border-style: solid ; */
+        align-items: center;
+        /* text-align: center; */
+        padding: 0;
+
+    }
+
+    input {
+        height: 60px;
+        text-align: center;
+        font-size: 130%;
+
+    }
+</style>
+
+<body>
+    <h1>SUDOKU</h1>
+    <div id="container">
+
+    </div>
+</body>
+
+</html>
+
+<!-- we will create js to take Boxes inputs -->
+<script>
+
+    var sudoku = [[], [], [], [], [], [], [], [], []]
+
+
+    function createGrid() {
+
+        var myContainer = document.getElementById("container");
+        // 1. I want to add input inside container
+        // 2. Create input element
+        // use for to access the html element in js createElement
+
+        // myContainer.appendChild(myInput)
+
+        for (var i = 0; i < 9; i++) {
+
+            for (var j = 0; j < 9; j++) {
+
+
+                var myInput = document.createElement("input");
+                // we want too add 
+                myInput.id = `${i}${j}`;
+
+
+                // We use Math to generate random values in boxe
+                var number = Math.ceil(Math.random() * 9)
+                myInput.row = i
+                myInput.col = j
+
+                // console.log("number:", number)
+
+                if (isSafe(sudoku, i, j, number)) {
+
+                    myInput.value = number
+                    myInput.readOnly = true
+                }
+
+                else {
+
+                    number = 0
+                    myInput.value = " "
+                }
+
+
+                //appe
+
+
+                sudoku[i][j] = number
+                // console.log("sudoku:", sudoku)
+                myContainer.appendChild(myInput)
+
+                myInput.oninput = function (e) {
+
+                    checkAnswer(sudoku, e)
+                }
+            }
+
+        }
+
+    }
+
+    createGrid()
+
+
+    // checking foe number row and the column grid
+
+    // isSafe(sudoku, i, j, number)
+    function isSafe(grid, row, col, num) {
+
+
+        for (var x = 0; x < 9; x++) {
+            if (grid[row][x] == num) {
+                return false
+            }
+
+        }
+
+        for (var y = 0; y < 9; y++) {
+            if (grid[y][col] == num) {
+                return false
+            }
+
+        }
+        var startRow = row - (row % 3)
+        var startCol = col - (col % 3)
+
+        for (var m = 0; m < 3; m++) {
+            for (var n = 0; n < 3; n++) {
+                if (grid[m + startRow][n + startCol] == num) {
+                    return false
+                }
+
+            }
+        }
+        return true
+
+    }
+
+    function checkAnswer(grid, e) {
+        var row = e.target.row
+        var col = e.target.col
+        var num = Number(e.data)
+        var id = e.target.id
+
+        if (num == " ") {
+            return false
+        }
+
+        for (var x = 0; x < 9; x++) {
+
+            if (grid[row][x] == num) {
+
+                showColors("red", id)
+                return false
+            }
+        }
+
+
+        for (var y = 0; y < 9; y++) {
+            if (grid[y][col] == num) {
+                showColors("red", id)
+                return false
+            }
+
+
+        }
+        var startRow = row - (row % 3)
+        var startCol = col - (col % 3)
+
+        for (var m = 0; m < 9; m++) {
+
+
+            for (var n = 0; n < 3; n++) {
+
+                if (grid[m + startRow][n + startCol] == num) {
+
+
+                    showColors("red", id)
+                    return false
+                }
+
+            }
+
+
+            showColors("green", id)
+            return true
+        }
+
+
+        function showColors(color, id) {
+
+            var inp = document.getElementById(id)
+
+            if (color == "red") {
+
+                inp.style.backgroundColor = "red"
+            }
+            else {
+                inp.style.backgroundColor = "green"
+            }
+
+        }
+    }
+
+</script>
